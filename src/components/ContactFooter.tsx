@@ -10,65 +10,65 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Twitter, Linkedin, Github, MessageCircle } from 'lucide-react';
-const ContactForm = () => {
-  return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-full px-8 py-6 text-lg">
-          Start Your Project
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="bg-gray-900/95 backdrop-blur-xl border-gray-800">
-        <DialogHeader>
-          <DialogTitle className="text-2xl">Let's discuss your project</DialogTitle>
-        </DialogHeader>
-        <div className="space-y-6 mt-6">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="text-sm text-gray-400 mb-2 block">Name</label>
-              <Input className="bg-black/50 border-gray-800" placeholder="Your name" />
-            </div>
-            <div>
-              <label className="text-sm text-gray-400 mb-2 block">Email</label>
-              <Input className="bg-black/50 border-gray-800" placeholder="your@email.com" />
-            </div>
-          </div>
-          <div>
-            <label className="text-sm text-gray-400 mb-2 block">Project Type</label>
-            <select className="w-full px-4 py-2 bg-black/50 border border-gray-800 rounded-lg focus:border-violet-500 focus:outline-none text-white">
-              <option>Web Application</option>
-              <option>AI Solution</option>
-              <option>Blockchain Development</option>
-              <option>Custom Project</option>
-            </select>
-          </div>
-          <div>
-            <label className="text-sm text-gray-400 mb-2 block">Budget Range</label>
-            <select className="w-full px-4 py-2 bg-black/50 border border-gray-800 rounded-lg focus:border-violet-500 focus:outline-none text-white">
-              <option>$5,000 - $10,000</option>
-              <option>$10,000 - $20,000</option>
-              <option>$20,000+</option>
-              <option>To be discussed</option>
-            </select>
-          </div>
-          <div>
-            <label className="text-sm text-gray-400 mb-2 block">Project Details</label>
-            <Textarea 
-              className="bg-black/50 border-gray-800 h-32"
-              placeholder="Tell us about your project requirements, timeline, and any specific features you're looking for..."
-            />
-          </div>
-          <Button className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 rounded-full py-6">
-            Submit Request
-          </Button>
-          <p className="text-sm text-gray-500 text-center">
-            We typically respond within 24 hours to schedule a detailed discussion.
-          </p>
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
-};
+// const ContactForm = () => {
+//   return (
+//     <Dialog>
+//       <DialogTrigger asChild>
+//         <Button className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-full px-8 py-6 text-lg">
+//           Start Your Project
+//         </Button>
+//       </DialogTrigger>
+//       <DialogContent className="bg-gray-900/95 backdrop-blur-xl border-gray-800">
+//         <DialogHeader>
+//           <DialogTitle className="text-2xl">Let's discuss your project</DialogTitle>
+//         </DialogHeader>
+//         <div className="space-y-6 mt-6">
+//           <div className="grid grid-cols-2 gap-4">
+//             <div>
+//               <label className="text-sm text-gray-400 mb-2 block">Name</label>
+//               <Input className="bg-black/50 border-gray-800" placeholder="Your name" />
+//             </div>
+//             <div>
+//               <label className="text-sm text-gray-400 mb-2 block">Email</label>
+//               <Input className="bg-black/50 border-gray-800" placeholder="your@email.com" />
+//             </div>
+//           </div>
+//           <div>
+//             <label className="text-sm text-gray-400 mb-2 block">Project Type</label>
+//             <select className="w-full px-4 py-2 bg-black/50 border border-gray-800 rounded-lg focus:border-violet-500 focus:outline-none text-white">
+//               <option>Web Application</option>
+//               <option>AI Solution</option>
+//               <option>Blockchain Development</option>
+//               <option>Custom Project</option>
+//             </select>
+//           </div>
+//           <div>
+//             <label className="text-sm text-gray-400 mb-2 block">Budget Range</label>
+//             <select className="w-full px-4 py-2 bg-black/50 border border-gray-800 rounded-lg focus:border-violet-500 focus:outline-none text-white">
+//               <option>$5,000 - $10,000</option>
+//               <option>$10,000 - $20,000</option>
+//               <option>$20,000+</option>
+//               <option>To be discussed</option>
+//             </select>
+//           </div>
+//           <div>
+//             <label className="text-sm text-gray-400 mb-2 block">Project Details</label>
+//             <Textarea 
+//               className="bg-black/50 border-gray-800 h-32"
+//               placeholder="Tell us about your project requirements, timeline, and any specific features you're looking for..."
+//             />
+//           </div>
+//           <Button className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 rounded-full py-6">
+//             Submit Request
+//           </Button>
+//           <p className="text-sm text-gray-500 text-center">
+//             We typically respond within 24 hours to schedule a detailed discussion.
+//           </p>
+//         </div>
+//       </DialogContent>
+//     </Dialog>
+//   );
+// };
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -115,4 +115,4 @@ const Footer = () => {
     </footer>
   );
 };
-export { ContactForm, Footer };
+export {Footer };

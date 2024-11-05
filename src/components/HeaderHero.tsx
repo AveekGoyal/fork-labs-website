@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X, ArrowRight } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import QuickContactForm from './QuickContactForm';
+import AIChat from '../components/AIChat';
 
 
 const Header = () => {
@@ -34,7 +34,7 @@ const Header = () => {
           </div>
 
           <div className="hidden md:flex items-center space-x-4">
-          <QuickContactForm 
+          <AIChat 
               className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-full px-4 py-4 text-g hover:opacity-90 transition-opacity"
               />
           </div>
@@ -55,7 +55,7 @@ const Header = () => {
               <a href="#upcoming" className="text-gray-300 hover:text-white transition-colors">Upcoming Projects</a>
               <a href="#pricing" className="text-gray-300 hover:text-white transition-colors">Pricing</a>
               <Button className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-full">
-              <QuickContactForm 
+              <AIChat 
               className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-full px-8 py-6 text-lg hover:opacity-90 transition-opacity"
               />
               </Button>
@@ -86,7 +86,7 @@ const Hero = () => {
           
           {/* Centered Connect with us button */}
           <div className="flex justify-center mb-12">
-            <QuickContactForm 
+            <AIChat 
               className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-full px-8 py-6 text-lg hover:opacity-90 transition-opacity"
             />
           </div>

@@ -2,7 +2,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Check } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import QuickContactForm from './QuickContactForm';
+import AIChat from '../components/AIChat';
 
 // InView hook with state management
 const useInView = (ref: React.RefObject<HTMLElement>) => {
@@ -223,7 +223,7 @@ const Pricing = () => {
                 </ul>
 
                 {/* CTA Button */}
-                <QuickContactForm 
+                <AIChat 
                   triggerText="Get Started"
                   className={`w-full rounded-full py-6 transition-all duration-500
                              ${plan.isPopular ? 

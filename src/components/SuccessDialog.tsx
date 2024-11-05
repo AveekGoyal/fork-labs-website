@@ -1,5 +1,10 @@
 import React from 'react';
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogHeader,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, ArrowRight } from 'lucide-react';
 
@@ -16,6 +21,10 @@ const SuccessDialog: React.FC<SuccessDialogProps> = ({ isOpen, onClose }) => {
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 to-emerald-600 rounded-t-3xl" />
         
         <div className="p-8 text-center">
+          <DialogHeader>
+            <DialogTitle className="sr-only">Success Confirmation</DialogTitle>
+          </DialogHeader>
+
           {/* Success Icon */}
           <div className="mx-auto w-16 h-16 mb-6 relative">
             <div className="absolute inset-0 bg-green-500/20 rounded-full animate-ping" />
@@ -35,7 +44,7 @@ const SuccessDialog: React.FC<SuccessDialogProps> = ({ isOpen, onClose }) => {
 
           {/* Action Buttons */}
           <div className="space-y-3">
-            <Button 
+            <Button
               onClick={onClose}
               className="w-full bg-gradient-to-r from-green-600 to-emerald-600 rounded-xl py-6 text-white font-medium
                        hover:from-green-500 hover:to-emerald-500 transition-all duration-300 group shadow-lg
