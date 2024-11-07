@@ -19,6 +19,8 @@ import {
 } from '../utils/storage';
 import CalendlyDialog from './CalendlyDialog';
 import ChatInput from './ChatInput';
+import BlurOverlay from './BlurOverlay';
+
 
 interface AIChatProps {
   className?: string;
@@ -326,82 +328,122 @@ const handleSubmit = async (e: React.FormEvent) => {
     }, 3000);
   };
 
-  return (
-    <>
-      <Dialog 
-        open={isOpen} 
-        onOpenChange={(open) => {
-          setIsOpen(open);
-          if (!open) {
-            handleCleanup();
-          }
-        }}
-      >
-        <DialogTrigger asChild>
-          <Button className={className}>{triggerText}</Button>
-        </DialogTrigger>
+  
+    return (
 
-        <DialogContent
-
-          className="bg-gray-900/95 backdrop-blur-xl border-none max-w-3xl p-0 gap-0 rounded-3xl shadow-2xl h-[700px] flex flex-col [&>button]:text-white [&>button]:hover:text-gray-300"
-          onPointerDownOutside={(e) => {
-          if (messages.length >= 1) {
-            e.preventDefault();
-          }
-          }}
-          onInteractOutside={(e) => {
-            if (messages.length >= 1) {
-              e.preventDefault(); 
+      <>
+       <BlurOverlay isVisible={isOpen} />
+        <Dialog 
+          open={isOpen} 
+          onOpenChange={(open) => {
+            setIsOpen(open);
+            if (!open) {
+              handleCleanup();
             }
           }}
         >
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-violet-500 to-indigo-600 rounded-t-3xl" />
-
-          <DialogHeader className="p-6 border-b border-gray-800">
-            <DialogTitle className="text-xl font-semibold bg-gradient-to-r from-violet-500 to-indigo-600 bg-clip-text text-transparent">
-              Tell Us About Your Project
-            </DialogTitle>
-          </DialogHeader>
-        <ScrollArea className="flex-1 p-6">
-        <div className="space-y-2">
-          {messages.map((message) => {
-            if (message.role === 'system') {
-              return <TypingIndicator key={message.id} />;
-            }
-            return message.role === 'assistant' ? (
-              <AIResponse
-                key={message.id}
-                content={message.content}
-                isStreaming={message.isStreaming || false}
-              />
-            ) : (
-              <UserMessage
-                key={message.id}
-                content={message.content}
-              />
-            );
-          })}
-        </div>
-        <div ref={messagesEndRef} />
-      </ScrollArea>
-
-          <ChatInput
-            input={input}
-            isLoading={isLoading}
-            onInputChange={setInput}
-            onSubmit={handleSubmit}
-            onSubmitChat={handleSubmitChat}
-            onKeyDown={(e) => handleInputKeyDown(e as React.KeyboardEvent<HTMLTextAreaElement>)}
-          />
-        </DialogContent>
-      </Dialog>
-      <CalendlyDialog 
-        isOpen={showCalendly}
-        onClose={() => setShowCalendly(false)}
-        onScheduled={handleCalendlyScheduled}
-      />
-    </>
-  );
-};
-
-export default AIChat;
+          <DialogTrigger asChild>
+            <Button className={className}>{triggerText}</Button>
+          </DialogTrigger>
+  
+          <DialogContent
+            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 max-w-3xl w-[90vw] h-auto max-h-[90vh] p-0 border-none bg-transparent flex flex-col overflow-hidden"
+            onPointerDownOutside={(e) => {
+              if (messages.length >= 1) {
+                e.preventDefault();
+              }
+            }}
+            onInteractOutside={(e) => {
+              if (messages.length >= 1) {
+                e.preventDefault();
+              }
+            }}
+          >
+            {/* Main container with glass effect */}
+            <div className="relative w-full h-[700px] max-h-[90vh] rounded-3xl flex flex-col overflow-hidden">
+              {/* Background */}
+              <div className="absolute inset-0 bg-slate-950/90 backdrop-blur-md border border-slate-800/50" />
+              
+              {/* Animated background elements */}
+              <div className="absolute inset-0 overflow-hidden">
+                <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-violet-500/10 rounded-full blur-3xl animate-blob1 mix-blend-soft-light" />
+                <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-3xl animate-blob2 mix-blend-soft-light" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(99,102,241,0.05),transparent_50%)]" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(139,92,246,0.05),transparent_50%)]" />
+              </div>
+  
+              {/* Top highlight */}
+              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-violet-500/20 to-transparent" />
+  
+              {/* Content */}
+              <div className="relative flex flex-col h-full">
+                <DialogHeader className="flex-shrink-0 px-8 pt-8 pb-4">
+                  <DialogTitle className="text-xl font-semibold bg-gradient-to-br from-white to-white/70 bg-clip-text text-transparent">
+                    Tell Us About Your Project
+                  </DialogTitle>
+                </DialogHeader>
+  
+                <ScrollArea className="flex-1 px-8 pb-4 pt-2 [&_*::-webkit-scrollbar-thumb]:!bg-violet-500/50 [&_*::-webkit-scrollbar-thumb:hover]:!bg-violet-500/70">
+                  <div className="space-y-6">
+                    {messages.map((message) => {
+                      if (message.role === 'system') {
+                        return <TypingIndicator key={message.id} />;
+                      }
+                      return message.role === 'assistant' ? (
+                        <AIResponse
+                          key={message.id}
+                          content={message.content}
+                          isStreaming={message.isStreaming || false}
+                        />
+                      ) : (
+                        <UserMessage
+                          key={message.id}
+                          content={message.content}
+                        />
+                      );
+                    })}
+                  </div>
+                  <div ref={messagesEndRef} />
+                </ScrollArea>
+  
+                <div className="flex-shrink-0 p-8 pt-4">
+                  <ChatInput
+                    input={input}
+                    isLoading={isLoading}
+                    onInputChange={setInput}
+                    onSubmit={handleSubmit}
+                    onSubmitChat={handleSubmitChat}
+                    onKeyDown={handleInputKeyDown}
+                  />
+                </div>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+        
+        <CalendlyDialog 
+          isOpen={showCalendly}
+          onClose={() => setShowCalendly(false)}
+          onScheduled={handleCalendlyScheduled}
+        />
+  
+        <style jsx global>{`
+          @keyframes blob1 {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.7; }
+            33% { transform: translate(30px, 30px) scale(1.1); opacity: 0.5; }
+            66% { transform: translate(-20px, 20px) scale(0.9); opacity: 0.3; }
+          }
+          @keyframes blob2 {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.7; }
+            33% { transform: translate(-30px, -30px) scale(1.1); opacity: 0.5; }
+            66% { transform: translate(20px, -20px) scale(0.9); opacity: 0.3; }
+          }
+            button[type="button"].absolute.right-4.top-4 {
+            color: white;
+          }
+        `}</style>
+      </>
+    );
+  };
+  
+  export default AIChat;

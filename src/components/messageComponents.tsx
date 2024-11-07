@@ -4,7 +4,6 @@ import { marked } from 'marked';
 import { markedHighlight } from "marked-highlight";
 import DOMPurify from 'isomorphic-dompurify';
 
-// Configure marked
 marked.use(
   markedHighlight({
     async: false,
@@ -12,32 +11,32 @@ marked.use(
   })
 );
 
-// Standalone Typing Indicator Component
 export const TypingIndicator = () => (
   <div className="flex items-start space-x-3 group mb-6">
-    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-600 to-indigo-600 
-                    flex items-center justify-center flex-shrink-0 shadow-lg">
-      <Bot className="w-5 h-5 text-white" />
+    <div className="relative w-8 h-8">
+      <div className="absolute inset-0 bg-violet-500 rounded-xl" />
+      <div className="relative w-full h-full flex items-center justify-center">
+        <Bot className="w-5 h-5 text-white" />
+      </div>
     </div>
     <div className="flex-1">
-      <div className="inline-flex items-center space-x-2 px-4 py-2.5 bg-gray-900/80 
-                    backdrop-blur-sm rounded-2xl rounded-tl-none border border-gray-700/50">
-        <div className="flex items-center text-gray-200 space-x-2">
-          <span>ForkVis is typing</span>
+      <div className="inline-flex items-center px-4 py-2 space-x-2 bg-white/10 backdrop-blur-sm rounded-2xl rounded-tl-none">
+        <div className="flex items-center space-x-2">
+          <span className="text-white">ForkVis is typing</span>
           <div className="flex space-x-1">
-            <div className="w-1.5 h-1.5 bg-violet-400 rounded-full animate-bounce" 
-                 style={{ animationDelay: '0ms' }} />
-            <div className="w-1.5 h-1.5 bg-violet-400 rounded-full animate-bounce" 
-                 style={{ animationDelay: '150ms' }} />
-            <div className="w-1.5 h-1.5 bg-violet-400 rounded-full animate-bounce" 
-                 style={{ animationDelay: '300ms' }} />
+            {[0, 1, 2].map((i) => (
+              <div
+                key={i}
+                className="w-1.5 h-1.5 bg-violet-400 rounded-full animate-bounce"
+                style={{ animationDelay: `${i * 150}ms` }}
+              />
+            ))}
           </div>
         </div>
       </div>
     </div>
   </div>
 );
-
 
 export const AIResponse = memo(({ content, isStreaming }: { content: string; isStreaming: boolean }) => {
   const [html, setHtml] = useState('');
@@ -55,16 +54,17 @@ export const AIResponse = memo(({ content, isStreaming }: { content: string; isS
 
   return (
     <div className="flex items-start space-x-3 group mb-6">
-      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-600 to-indigo-600 
-                    flex items-center justify-center flex-shrink-0 shadow-lg">
-        <Bot className="w-5 h-5 text-white" />
+      <div className="relative w-8 h-8">
+        <div className="absolute inset-0 bg-violet-500 rounded-xl" />
+        <div className="relative w-full h-full flex items-center justify-center">
+          <Bot className="w-5 h-5 text-white" />
+        </div>
       </div>
       <div className="flex-1">
-        <div className="inline-block bg-gray-900/80 backdrop-blur-sm rounded-2xl rounded-tl-none 
-                      px-6 py-4 shadow-xl border border-gray-700/50 max-w-[85%]">
-          <div className="max-w-none">
+        <div className="inline-block max-w-[85%] px-6 py-4 bg-white/10 backdrop-blur-sm rounded-2xl rounded-tl-none">
+          <div className="prose prose-invert max-w-none">
             <div 
-              className="text-gray-100 markdown-content"
+              className="text-white markdown-content"
               dangerouslySetInnerHTML={{ __html: html }} 
             />
           </div>
@@ -80,15 +80,15 @@ export const UserMessage = memo(({ content }: { content: string }) => {
   return (
     <div className="flex items-start space-x-3 justify-end group mb-6">
       <div className="flex-1 flex justify-end">
-        <div className="inline-block bg-gradient-to-br from-violet-600 to-indigo-600 
-                      rounded-2xl rounded-tr-none px-6 py-4
-                      shadow-xl text-white max-w-[85%]">
-          {content}
+        <div className="inline-block max-w-[85%] px-6 py-4 bg-violet-600 rounded-2xl rounded-tr-none">
+          <span className="text-white">{content}</span>
         </div>
       </div>
-      <div className="w-8 h-8 rounded-lg bg-violet-600/20 
-                    flex items-center justify-center flex-shrink-0">
-        <User className="w-5 h-5 text-violet-400" />
+      <div className="relative w-8 h-8">
+        <div className="absolute inset-0 bg-violet-500/20 rounded-xl" />
+        <div className="relative w-full h-full flex items-center justify-center">
+          <User className="w-5 h-5 text-violet-400" />
+        </div>
       </div>
     </div>
   );
@@ -96,7 +96,7 @@ export const UserMessage = memo(({ content }: { content: string }) => {
 
 UserMessage.displayName = 'UserMessage';
 
-// Add some global styles for markdown content
+// Updated markdown content styles with better contrast
 const styles = `
   .markdown-content h1 {
     font-size: 1.5rem;
@@ -115,6 +115,7 @@ const styles = `
   .markdown-content p {
     margin-bottom: 0.75rem;
     line-height: 1.6;
+    color: white;
   }
 
   .markdown-content ul {
@@ -125,17 +126,23 @@ const styles = `
 
   .markdown-content li {
     margin-bottom: 0.25rem;
+    color: white;
+  }
+
+  .markdown-content em {
+    color: rgb(199, 196, 212);
+    font-style: italic;
   }
 
   .markdown-content code {
-    background-color: rgba(0, 0, 0, 0.3);
+    background: rgba(255, 255, 255, 0.1);
     padding: 0.2em 0.4em;
     border-radius: 0.25rem;
     font-family: monospace;
+    color: white;
   }
 `;
 
-// Insert styles into document
 if (typeof document !== 'undefined') {
   const styleSheet = document.createElement('style');
   styleSheet.textContent = styles;

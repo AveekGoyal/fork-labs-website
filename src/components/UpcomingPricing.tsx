@@ -104,12 +104,12 @@ const Pricing = () => {
       features: [
         "Custom Web Application",
         "Basic AI Integration",
-        "3 Months Support",
-        "Technical Documentation",
+        "Basic Web3 Integration",
+        "1 Month Support",
         "Weekly Progress Updates",
-        "Performance Monitoring",
-        "Security Best Practices",
-        "Code Repository Access"
+        "Code Repository Access",
+        "Technical Documentation",
+        "Performance Monitoring"
       ]
     },
     {
@@ -117,14 +117,14 @@ const Pricing = () => {
       price: "3,000",
       description: "Ideal for growing companies requiring advanced features and integrations.",
       features: [
+        "Everything in MVP",
         "Advanced Web Application",
         "Custom AI Integration",
-        "Blockchain Integration",
-        "6 Months Support",
+        "Custom Web3 Integration",
+        "2 Months Support",
         "Comprehensive Documentation",
         "24/7 Priority Support",
         "Performance Optimization",
-        "API Development"
       ],
       isPopular: true
     },
@@ -133,13 +133,13 @@ const Pricing = () => {
       price: "Custom",
       description: "Tailored solutions for enterprises with complex requirements.",
       features: [
+        "Everything in Standard",
         "Full-Scale Custom Solution",
-        "Enterprise AI Systems",
-        "Private Blockchain Networks",
-        "1 Year Premium Support",
+        "Enterprise AI and Blockchain Systems",
+        "Priority feature development",
+        "3 Months Premium Support",
         "White Label Options",
         "24/7 VIP Support",
-        "Custom SLA",
         "Dedicated Team"
       ]
     }
@@ -182,11 +182,11 @@ const Pricing = () => {
             >
               {/* Popular badge with animation */}
               {plan.isPopular && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 
-                               bg-violet-500 rounded-full text-sm animate-pulse-slow">
-                  Most Popular
-                </div>
-              )}
+            <div className="absolute -top-4 inset-x-0 mx-auto w-fit px-4 py-1 
+                            bg-violet-500 rounded-full text-sm animate-pulse-slow">
+              Most Popular
+            </div>
+            )}
               
               {/* Plan content */}
               <div className="flex flex-col h-full">

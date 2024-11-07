@@ -40,7 +40,7 @@ const Services = () => {
         "AI-Powered Features",
         "Smart Automation",
         "Intelligent Analytics",
-        "Enhanced User Experience"
+        "Custom AI Solutions"
       ]
     },
     {
@@ -51,7 +51,7 @@ const Services = () => {
         "Smart Contracts",
         "DeFi Applications",
         "NFT Platforms",
-        "Private Blockchains"
+        "Web3 Integration"
       ]
     },
     {
@@ -60,9 +60,9 @@ const Services = () => {
       description: "Create powerful, scalable, and user-friendly web applications that drive business growth. Our web solutions are built with modern technologies and follow best practices for performance and security.",
       features: [
         "Full-Stack Development",
-        "Cloud Architecture",
+        "Progressive Web Apps",
         "API Development",
-        "Real-time Systems"
+        "Custom CMS Development"
       ]
     }
   ];

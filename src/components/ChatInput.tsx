@@ -21,31 +21,28 @@ const ChatInput: React.FC<ChatInputProps> = ({
   onKeyDown 
 }) => {
   return (
-    <div className="p-4 border-t border-gray-800/50 bg-gray-900/80">
+    <div className="relative">
       <Button
         onClick={onSubmitChat}
-        className="mb-4 bg-gradient-to-r from-violet-600 to-indigo-600 
-                 hover:from-violet-500 hover:to-indigo-500 rounded-xl
-                 flex items-center justify-center space-x-2 shadow-lg 
-                 transition-all duration-300 text-white py-2 px-4 h-auto
-                 text-sm font-medium"
+        className="w-auto mb-4 relative group px-4 py-2 bg-violet-600 hover:bg-violet-700 
+                   rounded-lg text-sm font-medium text-white flex items-center justify-center 
+                   space-x-2 transition-all duration-200"
       >
-        <Calendar className="w-4 h-4 mr-2" />
-        Submit & Book Call
+        <Calendar className="w-4 h-4" />
+        <span>Submit & Book Call</span>
       </Button>
       
       <form onSubmit={onSubmit} className="flex space-x-3">
-        <div className="flex-1 relative">
+        <div className="flex-1 relative group">
           <TextareaAutosize
             value={input}
             onChange={(e) => onInputChange(e.target.value)}
             onKeyDown={onKeyDown}
             placeholder="Type your message..."
-            className="w-full bg-gray-900/80 border border-gray-700/50 rounded-xl 
-                     px-4 py-3 text-white placeholder:text-gray-500 
-                     focus:outline-none focus:ring-2 focus:ring-violet-500/20
-                     min-h-[44px] max-h-[120px] resize-none
-                     transition-all duration-300"
+            className="w-full bg-white/10 backdrop-blur-sm px-4 py-3 rounded-xl
+                     text-white placeholder:text-white/50
+                     focus:outline-none focus:ring-2 focus:ring-violet-500/50
+                     min-h-[44px] max-h-[120px] resize-none"
             disabled={isLoading}
             maxRows={4}
           />
@@ -58,12 +55,11 @@ const ChatInput: React.FC<ChatInputProps> = ({
         <Button
           type="submit"
           disabled={isLoading || !input.trim()}
-          className="bg-gradient-to-r from-violet-600 to-indigo-600 rounded-xl px-4
-                   hover:from-violet-500 hover:to-indigo-500 
+          className="bg-violet-600 hover:bg-violet-700 rounded-xl px-3
                    disabled:opacity-50 disabled:cursor-not-allowed
-                   transition-all duration-300 text-white h-[44px]"
+                   transition-all duration-200"
         >
-          <Send className="w-5 h-5" />
+          <Send className="w-5 h-5 text-white" />
         </Button>
       </form>
     </div>
