@@ -1,7 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Loader2, Calendar } from 'lucide-react';
 import { nanoid } from 'nanoid';
-import TextareaAutosize from 'react-textarea-autosize';
 import {
   Dialog,
   DialogContent,
@@ -12,58 +10,42 @@ import {
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { AIResponse, UserMessage } from './messageComponents';
-import { ExtendedMessage, formatProjectInquiry, formatEmailContent } from './types';
+import { ExtendedMessage, MessageType } from './types';
+import { formatEmailContent } from '../utils/format';
 import {
-  DialogHeaderControls,
-  ConfirmationDialog,
   saveToLocalStorage,
   loadFromLocalStorage,
   clearLocalStorage,
-} from './dialogManager';
-
-interface CalendlyDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onScheduled?: () => void;
-}
-
-const CalendlyDialog: React.FC<CalendlyDialogProps> = ({ isOpen, onClose, onScheduled }) => {
-  useEffect(() => {
-    // Listen for Calendly events
-    const handleCalendlyEvent = (e: MessageEvent) => {
-      if (e.data.event === 'calendly.event_scheduled') {
-        onScheduled?.();
-      }
-    };
-
-    window.addEventListener('message', handleCalendlyEvent);
-    return () => window.removeEventListener('message', handleCalendlyEvent);
-  }, [onScheduled]);
-
-  return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent 
-        className="bg-gray-900/95 backdrop-blur-xl border-none max-w-3xl p-0 gap-0 rounded-3xl shadow-2xl h-[700px]"
-        onPointerDownOutside={(e) => e.preventDefault()}
-      >
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-violet-500 to-indigo-600 rounded-t-3xl" />
-        <div className="w-full h-full">
-          <iframe
-            src="https://calendly.com/fork-labs-devs/30min"
-            width="100%"
-            height="100%"
-            className="rounded-3xl"
-          />
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
-};
+} from '../utils/storage';
+import CalendlyDialog from './CalendlyDialog';
+import ChatInput from './ChatInput';
 
 interface AIChatProps {
   className?: string;
   triggerText?: string;
 }
+
+const useMessageType = () => {
+  const messageTypeRef = useRef<MessageType>('name');
+
+  const determineMessageType = (content: string, messages: ExtendedMessage[]): MessageType => {
+    const lastAiMessage = messages.findLast(m => m.role === 'assistant')?.content.toLowerCase() || '';
+    
+    if (lastAiMessage.includes('name')) return 'name';
+    if (lastAiMessage.includes('email')) return 'email';
+    if (lastAiMessage.includes('type of project') || lastAiMessage.includes('project type')) return 'projectType';
+    if (lastAiMessage.includes('requirements') || lastAiMessage.includes('overview')) return 'requirements';
+    return 'general';
+  };
+
+  return {
+    currentType: messageTypeRef.current,
+    determineMessageType: (content: string, messages: ExtendedMessage[]) => {
+      messageTypeRef.current = determineMessageType(content, messages);
+      return messageTypeRef.current;
+    }
+  };
+};
 
 const AIChat: React.FC<AIChatProps> = ({
   className = "bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-full px-8 py-6 text-lg",
@@ -72,12 +54,16 @@ const AIChat: React.FC<AIChatProps> = ({
   const [messages, setMessages] = useState<ExtendedMessage[]>([]);
   const [input, setInput] = useState('');
   const [isOpen, setIsOpen] = useState(false);
-  const [isMinimized, setIsMinimized] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showCalendly, setShowCalendly] = useState(false);
-  const [showConfirmation, setShowConfirmation] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const currentMessageType = useRef<'name' | 'email' | 'projectType' | 'requirements' | 'general'>('name');
+  const { determineMessageType } = useMessageType();
+
+  const handleCleanup = () => {
+    setMessages([]);
+    clearLocalStorage();
+    setInput('');
+  };
 
   // Load saved state on initial mount
   useEffect(() => {
@@ -103,82 +89,91 @@ const AIChat: React.FC<AIChatProps> = ({
     }
   }, [messages]);
 
-  const handleClose = () => {
-    if (messages.length > 1) {
-      setShowConfirmation(true);
-    } else {
-      setIsOpen(false);
-      clearLocalStorage();
-    }
-  };
+  // Scroll to bottom on new messages
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
-  const handleConfirmClose = () => {
-    setShowConfirmation(false);
-    setIsOpen(false);
-    setMessages([]);
-    clearLocalStorage();
-  };
+  const extractSummaryFromMessages = (messages: ExtendedMessage[]) => {
+    const name = messages.find(m => m.type === 'name' && m.role === 'user')?.content || '';
+    const email = messages.find(m => m.type === 'email' && m.role === 'user')?.content || '';
+    const projectType = messages.find(m => m.type === 'projectType' && m.role === 'user')?.content || '';
+    const requirements = messages.find(m => m.type === 'requirements' && m.role === 'user')?.content || '';
 
-  const handleMinimize = () => {
-    setIsMinimized(true);
-  };
-
-  const handleMaximize = () => {
-    setIsMinimized(false);
-  };
-
-  const determineMessageType = (content: string): void => {
-    const lastAiMessage = messages.findLast(m => m.role === 'assistant')?.content.toLowerCase() || '';
-    
-    if (lastAiMessage.includes('name')) {
-      currentMessageType.current = 'name';
-    } else if (lastAiMessage.includes('email')) {
-      currentMessageType.current = 'email';
-    } else if (lastAiMessage.includes('type of project') || lastAiMessage.includes('project type')) {
-      currentMessageType.current = 'projectType';
-    } else if (lastAiMessage.includes('requirements') || lastAiMessage.includes('overview')) {
-      currentMessageType.current = 'requirements';
-    } else {
-      currentMessageType.current = 'general';
-    }
+    return {
+      name,
+      email,
+      projectType,
+      requirements
+    };
   };
 
   const handleSubmitChat = async () => {
     try {
-      const projectInquiry = formatProjectInquiry(messages);
-      const emailContent = formatEmailContent(projectInquiry);
+      setIsLoading(true);
+      const summaryData = extractSummaryFromMessages(messages);
 
-      await fetch('/api/send-email', {
+      // Find the last AI message before submit
+      const lastAIMessage = messages
+        .filter(m => m.role === 'assistant')
+        .pop()?.content || '';
+
+      // Extract name from the message for email subject
+      const nameMatch = lastAIMessage.match(/Name:\s*([^\n]+)/);
+      const name = nameMatch ? nameMatch[1].trim() : 'Client';
+
+      const emailContent = {
+        name,
+        email: 'fork.labs.devs@gmail.com',
+        projectType: 'Project Inquiry',
+        message: lastAIMessage.split('## Next Steps')[0].trim() // Only include content before "Next Steps"
+      };
+
+      const response = await fetch('/api/send-email', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: projectInquiry.clientInfo.name,
-          email: projectInquiry.clientInfo.email,
-          projectType: projectInquiry.clientInfo.projectType,
-          message: emailContent,
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(emailContent),
       });
 
-      setShowCalendly(true);
+      if (!response.ok) {
+        throw new Error('Failed to send email');
+      }
+
+      setMessages(prev => [...prev, {
+        id: nanoid(),
+        role: 'assistant',
+        content: '# Great! Let\'s schedule a call 🎉\n\nI\'ll open the scheduling window for you now. Choose a time that works best for you.',
+        timestamp: new Date().toISOString(),
+      }]);
+
+      setTimeout(() => {
+        setShowCalendly(true);
+      }, 1500);
+
     } catch (error) {
       console.error('Error sending chat history:', error);
+      setMessages(prev => [...prev, {
+        id: nanoid(),
+        role: 'assistant',
+        content: 'Sorry, there was an error processing your request. Please try again.',
+        timestamp: new Date().toISOString(),
+      }]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim() && !input.toLowerCase().includes('submit')) return;
+    if (!input.trim()) return;
 
-    determineMessageType(input);
-
+    const messageType = determineMessageType(input, messages);
     const userMessage: ExtendedMessage = {
       id: nanoid(),
       role: 'user',
       content: input.trim(),
       timestamp: new Date().toISOString(),
-      type: currentMessageType.current
+      type: messageType
     };
 
     setInput('');
@@ -200,6 +195,7 @@ const AIChat: React.FC<AIChatProps> = ({
         }),
       });
 
+      if (!response.ok) throw new Error('API request failed');
       if (!response.body) throw new Error('No response body');
 
       const reader = response.body.getReader();
@@ -255,24 +251,55 @@ const AIChat: React.FC<AIChatProps> = ({
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      handleSubmit(e as any);
+      void handleSubmit(e as any);
     }
   };
+
   const handleCalendlyScheduled = () => {
     setShowCalendly(false);
-    setIsOpen(false);
-    setMessages([]);
-    clearLocalStorage();
+    setMessages(prev => [...prev, {
+      id: nanoid(),
+      role: 'assistant',
+      content: '# Thanks for scheduling a call! 🎉\n\nWe\'ve sent you a calendar invitation. Looking forward to discussing your project in detail.',
+      timestamp: new Date().toISOString(),
+    }]);
+    
+    // Clear the chat after a brief delay
+    setTimeout(() => {
+      setIsOpen(false);
+      handleCleanup();
+    }, 3000);
   };
 
   return (
     <>
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <Dialog 
+        open={isOpen} 
+        onOpenChange={(open) => {
+          setIsOpen(open);
+          if (!open) {
+            handleCleanup();
+          }
+        }}
+      >
         <DialogTrigger asChild>
           <Button className={className}>{triggerText}</Button>
         </DialogTrigger>
 
-        <DialogContent className="bg-gray-900/95 backdrop-blur-xl border-none max-w-3xl p-0 gap-0 rounded-3xl shadow-2xl h-[700px] flex flex-col">
+        <DialogContent
+
+          className="bg-gray-900/95 backdrop-blur-xl border-none max-w-3xl p-0 gap-0 rounded-3xl shadow-2xl h-[700px] flex flex-col [&>button]:text-white [&>button]:hover:text-gray-300"
+          onPointerDownOutside={(e) => {
+          if (messages.length >= 1) {
+            e.preventDefault();
+          }
+          }}
+          onInteractOutside={(e) => {
+            if (messages.length >= 1) {
+              e.preventDefault(); 
+            }
+          }}
+        >
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-violet-500 to-indigo-600 rounded-t-3xl" />
 
           <DialogHeader className="p-6 border-b border-gray-800">
@@ -280,7 +307,6 @@ const AIChat: React.FC<AIChatProps> = ({
               Tell Us About Your Project
             </DialogTitle>
           </DialogHeader>
-
           <ScrollArea className="flex-1 p-6">
             <div className="space-y-2">
               {messages.map((message) => (
@@ -301,55 +327,20 @@ const AIChat: React.FC<AIChatProps> = ({
             <div ref={messagesEndRef} />
           </ScrollArea>
 
-          <div className="p-6 border-t border-gray-800">
-            <div className="flex space-x-4">
-              <Button
-                onClick={handleSubmitChat}
-                className="bg-gradient-to-r from-violet-600 to-indigo-600 rounded-xl px-6
-                         hover:from-violet-500 hover:to-indigo-500 transition-all duration-300
-                         flex items-center space-x-2"
-              >
-                <Calendar className="w-5 h-5" />
-                <span>Submit & Book Call</span>
-              </Button>
-            </div>
-            <form onSubmit={handleSubmit} className="flex space-x-4 mt-4">
-              <TextareaAutosize
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={handleInputKeyDown}
-                placeholder="Type your message..."
-                className="flex-1 bg-black/30 border border-gray-800 rounded-xl px-4 py-3 text-white 
-                         placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-violet-500/20
-                         min-h-[44px] max-h-[120px] resize-none"
-                disabled={isLoading}
-                maxRows={4}
-              />
-              <Button
-                type="submit"
-                disabled={isLoading || !input.trim()}
-                className="bg-gradient-to-r from-violet-600 to-indigo-600 rounded-xl px-6
-                         hover:from-violet-500 hover:to-indigo-500 transition-all duration-300
-                         disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isLoading ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                ) : (
-                  <Send className="w-5 h-5" />
-                )}
-              </Button>
-            </form>
-          </div>
+          <ChatInput
+            input={input}
+            isLoading={isLoading}
+            onInputChange={setInput}
+            onSubmit={handleSubmit}
+            onSubmitChat={handleSubmitChat}
+            onKeyDown={handleInputKeyDown}
+          />
         </DialogContent>
       </Dialog>
-
       <CalendlyDialog 
-        isOpen={showCalendly} 
-        onClose={() => {
-          setShowCalendly(false);
-          setIsOpen(false);
-          setMessages([]);
-        }} 
+        isOpen={showCalendly}
+        onClose={() => setShowCalendly(false)}
+        onScheduled={handleCalendlyScheduled}
       />
     </>
   );

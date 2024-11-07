@@ -1,0 +1,88 @@
+.messageContainer {
+    @apply flex items-start space-x-4 mb-8;
+  }
+  
+  .aiMessage {
+    @apply flex-1;
+  }
+  
+  .aiContent {
+    @apply bg-white/10 rounded-2xl rounded-tl-none px-6 py-4 text-gray-200 max-w-none;
+  }
+  
+  .aiIcon {
+    @apply w-10 h-10 rounded-lg bg-gradient-to-r from-violet-600 to-indigo-600 flex items-center justify-center flex-shrink-0;
+  }
+  
+  .userMessage {
+    @apply flex items-start space-x-4 justify-end mb-8;
+  }
+  
+  .userContent {
+    @apply bg-violet-600 rounded-2xl rounded-tr-none px-6 py-4 text-white ml-12;
+  }
+  
+  .userIcon {
+    @apply w-10 h-10 rounded-lg bg-violet-600/20 flex items-center justify-center flex-shrink-0;
+  }
+  
+  /* Replace prose classes with direct styling */
+  .markdown {
+    @apply text-gray-200;
+  }
+  
+  .markdown h1 {
+    @apply text-2xl font-bold mb-6;
+  }
+  
+  .markdown h2 {
+    @apply text-xl font-bold mb-4;
+  }
+  
+  .markdown p {
+    @apply mb-4 leading-relaxed;
+  }
+  
+  .markdown ul {
+    @apply mb-4 space-y-2;
+  }
+  
+  .markdown ul li {
+    @apply ml-4;
+  }
+  
+  .markdown hr {
+    @apply my-6 border-gray-700;
+  }
+  
+  .markdown a {
+    @apply text-violet-400 hover:text-violet-300 underline;
+  }
+  
+  .markdown code {
+    @apply bg-black/30 px-1.5 py-0.5 rounded text-sm font-mono;
+  }
+  
+  .markdown pre {
+    @apply bg-black/30 p-4 rounded-lg mb-4 overflow-x-auto;
+  }
+  
+  .markdown blockquote {
+    @apply border-l-4 border-gray-700 pl-4 italic my-4;
+  }
+  
+  .typingIndicator {
+    @apply flex items-center space-x-1 mt-2 text-violet-400;
+  }
+  
+  .typingDot {
+    @apply animate-pulse;
+  }
+  
+  .typingDot:nth-child(2) {
+    animation-delay: 150ms;
+  }
+  
+  .typingDot:nth-child(3) {
+    animation-delay: 300ms;
+  }
