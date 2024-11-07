@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Menu, X, ArrowRight } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import AIChat from '../components/AIChat';
+import TypeWriter from './TypeWriter';
 
 
 const Header = () => {
@@ -69,19 +70,24 @@ const Header = () => {
 
 
 const Hero = () => {
+  const typingWords = ['Vision', 'Innovation', 'Future'];
+
   return (
     <section className="relative min-h-[80vh] flex items-center pt-20 pb-16 overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,_rgba(99,102,241,0.2),transparent_60%)]" />
       <div className="container mx-auto px-6 relative">
         <div className="max-w-4xl mx-auto text-center">
           <div className="inline-block mb-6 px-8 py-2 bg-gray-900/50 rounded-full backdrop-blur-sm">
-            <span className="text-sm text-gray-400">Transforming Ideas into Digital Reality</span>
+            <span className="text-sm text-gray-400">Your <TypeWriter words={typingWords} />. Our Expertise.</span>
           </div>
-          <h1 className="text-5xl md:text-7xl font-bold mb-8 leading-tight">
-            Building <span className="bg-gradient-to-r from-violet-500 to-indigo-600 bg-clip-text text-transparent">Next-Gen Solutions</span> for Forward-Thinking Businesses
+          <h1 className="text-4xl md:text-5xl font-bold mb-8 leading-tight">
+          Got a Big Idea?{'\n'}
+            <span className="bg-gradient-to-r from-violet-500 to-indigo-600 bg-clip-text text-transparent">
+            Let's make it real together
+            </span>
           </h1>
-          <p className="text-xl text-gray-400 mb-10 leading-relaxed max-w-3xl mx-auto">
-            We're a team of expert developers specializing in AI-powered solutions, blockchain applications, and cutting-edge web platforms. Our mission is to help businesses leverage emerging technologies to stay ahead in the digital age.
+          <p className="text-l text-gray-400 mb-10 leading-relaxed max-w-3xl mx-auto">
+            Every great innovation starts with a conversation. We're a team of tech enthusiasts who love turning ambitious ideas into reality – whether that's through AI that thinks ahead, blockchain that builds trust, or web platforms that wow your users.
           </p>
           
           {/* Centered Connect with us button */}
@@ -91,8 +97,7 @@ const Hero = () => {
             />
           </div>
           
-          {/* Values section with reduced spacing */}
-          <div className="border-t border-gray-800/50 pt-12">
+          <div className="border-t border-gray-800/50 pt-8 pb-4">
             <div className="grid md:grid-cols-3 gap-8 max-w-3xl mx-auto">
               <div className="text-center">
                 <div className="text-2xl font-bold text-violet-400 mb-2">Innovation</div>
@@ -110,8 +115,18 @@ const Hero = () => {
           </div>
         </div>
       </div>
+
+      {/* Add a subtle animation to the background */}
+      <style jsx>{`
+        @keyframes gradientFlow {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+      `}</style>
     </section>
   );
 };
+
 
 export { Header, Hero };

@@ -68,11 +68,11 @@ const Services = () => {
   ];
 
   return (
-    <section id="services" className="py-32 relative">
+    <section id="services" className="py-16 relative">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_70%,_rgba(99,102,241,0.1),transparent_50%)]
                       animate-pulse-slow" />
       <div className="container mx-auto px-6 relative">
-        <div className="max-w-3xl mx-auto text-center mb-20">
+        <div className="max-w-3xl mx-auto text-center mb-16">
           <h2 className="text-4xl font-bold mb-4">Our Expertise</h2>
           <p className="text-gray-400 text-lg leading-relaxed">
             We specialize in transforming complex technical challenges into elegant, scalable solutions.

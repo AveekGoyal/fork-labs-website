@@ -4,7 +4,7 @@ import { Header, Hero } from '../components/HeaderHero';
 import { Services, Process } from '../components/ServicesProcess';
 import { UpcomingProjects, Pricing } from '../components/UpcomingPricing';
 import { Footer } from '../components/ContactFooter';
-import QuickContactForm from '../components/QuickContactForm';
+import AIChat from '../components/AIChat';
 
 const App = () => {
   return (
@@ -24,7 +24,7 @@ const App = () => {
               <p className="text-gray-400 text-lg mb-12 leading-relaxed">
                 Let's collaborate to build something extraordinary together. Our team of experts is ready to help you navigate the complexities of modern technology and create solutions that drive real business value.
               </p>
-              <QuickContactForm 
+              <AIChat 
                 className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-full px-8 py-6 text-lg"
               />
             </div>

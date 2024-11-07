@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { AIResponse, UserMessage } from './messageComponents';
+import { AIResponse, TypingIndicator, UserMessage } from './messageComponents';
 import { ExtendedMessage, MessageType } from './types';
 import { formatEmailContent } from '../utils/format';
 import {
@@ -75,7 +75,7 @@ const AIChat: React.FC<AIChatProps> = ({
         setMessages([{
           id: nanoid(),
           role: 'assistant',
-          content: '# Welcome to ForkLabs! 👋\n\nI\'m here to learn about your project. Could you tell me your name?\n\n*Once we gather some basic information, you can click the Submit button to schedule a call with our team.*',
+          content: '# Welcome to ForkLabs! 👋\n\n I\'m ForkVis, the AI assistant here at ForkLabs. I will gather some basic information about you and your project to share with the ForkLabs team. \n\nCould you please tell me your name?\n\n*Once we gather some basic information, you can click the Submit button to schedule a call with our team.*',
           timestamp: new Date().toISOString(),
         }]);
       }
@@ -112,44 +112,62 @@ const AIChat: React.FC<AIChatProps> = ({
     try {
       setIsLoading(true);
       const summaryData = extractSummaryFromMessages(messages);
-
+  
       // Find the last AI message before submit
       const lastAIMessage = messages
         .filter(m => m.role === 'assistant')
         .pop()?.content || '';
-
+  
       // Extract name from the message for email subject
       const nameMatch = lastAIMessage.match(/Name:\s*([^\n]+)/);
       const name = nameMatch ? nameMatch[1].trim() : 'Client';
-
+  
+      // Extract content starting from "Project Inquiry Summary"
+      // and ending right before "Next Steps" section (not including Next Steps)
+      const summaryStartIndex = lastAIMessage.indexOf('# Project Inquiry Summary');
+      const nextStepsIndex = lastAIMessage.indexOf('## Next Steps');
+      
+      let messageContent = '';
+      if (summaryStartIndex !== -1) {
+        // If nextStepsIndex is found, slice up to but not including "## Next Steps"
+        // If nextStepsIndex is not found, slice to the end of the message
+        messageContent = lastAIMessage.slice(
+          summaryStartIndex,
+          nextStepsIndex !== -1 ? nextStepsIndex : undefined
+        ).trim();
+      } else {
+        // Fallback to original content if summary section not found
+        messageContent = lastAIMessage;
+      }
+  
       const emailContent = {
         name,
         email: 'fork.labs.devs@gmail.com',
         projectType: 'Project Inquiry',
-        message: lastAIMessage.split('## Next Steps')[0].trim() // Only include content before "Next Steps"
+        message: messageContent // Contains only the Project Inquiry Summary section
       };
-
+  
       const response = await fetch('/api/send-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(emailContent),
       });
-
+  
       if (!response.ok) {
         throw new Error('Failed to send email');
       }
-
+  
       setMessages(prev => [...prev, {
         id: nanoid(),
         role: 'assistant',
         content: '# Great! Let\'s schedule a call 🎉\n\nI\'ll open the scheduling window for you now. Choose a time that works best for you.',
         timestamp: new Date().toISOString(),
       }]);
-
+  
       setTimeout(() => {
         setShowCalendly(true);
       }, 1500);
-
+  
     } catch (error) {
       console.error('Error sending chat history:', error);
       setMessages(prev => [...prev, {
@@ -163,91 +181,128 @@ const AIChat: React.FC<AIChatProps> = ({
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!input.trim()) return;
+// In your AIChat.tsx, update the handleSubmit function:
 
-    const messageType = determineMessageType(input, messages);
-    const userMessage: ExtendedMessage = {
-      id: nanoid(),
-      role: 'user',
-      content: input.trim(),
-      timestamp: new Date().toISOString(),
-      type: messageType
-    };
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  if (!input.trim()) return;
 
-    setInput('');
-    setMessages(prev => [...prev, userMessage]);
+  const messageType = determineMessageType(input, messages);
+  const userMessage: ExtendedMessage = {
+    id: nanoid(),
+    role: 'user',
+    content: input.trim(),
+    timestamp: new Date().toISOString(),
+    type: messageType
+  };
 
-    if (input.toLowerCase() === 'submit') {
-      await handleSubmitChat();
-      return;
-    }
+  setInput('');
+  
+  // First add user message
+  setMessages(prev => [...prev, userMessage]);
 
-    setIsLoading(true);
+  if (input.toLowerCase() === 'submit') {
+    await handleSubmitChat();
+    return;
+  }
+  // Immediately show typing indicator
+  setMessages(prev => [...prev, {
+    id: 'typing-indicator',
+    role: 'system', // Changed role from 'typing' to 'system' to match the expected types
+    content: '',
+    timestamp: new Date().toISOString(),
+  }]);
 
-    try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: [...messages, userMessage]
-        }),
-      });
+  setIsLoading(true);
 
-      if (!response.ok) throw new Error('API request failed');
-      if (!response.body) throw new Error('No response body');
+  try {
+    const response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        messages: [...messages, userMessage]
+      }),
+    });
 
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      const streamingMessageId = nanoid();
-      
-      setMessages(prev => [...prev, {
+    if (!response.ok) throw new Error('API request failed');
+    if (!response.body) throw new Error('No response body');
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    const streamingMessageId = nanoid();
+    
+    // Replace typing indicator with streaming message
+    setMessages(prev => [
+      ...prev.filter(msg => msg.id !== 'typing-indicator'),
+      {
         id: streamingMessageId,
         role: 'assistant',
         content: '',
         isStreaming: true,
         timestamp: new Date().toISOString(),
-      }]);
-
-      let streamedContent = '';
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        const chunk = decoder.decode(value, { stream: true });
-        streamedContent += chunk;
-
-        setMessages(prev =>
-          prev.map(msg =>
-            msg.id === streamingMessageId
-              ? { ...msg, content: streamedContent }
-              : msg
-          )
-        );
       }
+    ]);
+
+    let streamedContent = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      const chunk = decoder.decode(value, { stream: true });
+      streamedContent += chunk;
 
       setMessages(prev =>
         prev.map(msg =>
           msg.id === streamingMessageId
-            ? { ...msg, isStreaming: false }
+            ? { ...msg, content: streamedContent }
             : msg
         )
       );
-    } catch (error) {
-      console.error('Error:', error);
-      setMessages(prev => [...prev, {
+    }
+
+    setMessages(prev =>
+      prev.map(msg =>
+        msg.id === streamingMessageId
+          ? { ...msg, isStreaming: false }
+          : msg
+      )
+    );
+  } catch (error) {
+    console.error('Error:', error);
+    // Remove typing indicator and show error
+    setMessages(prev => [
+      ...prev.filter(msg => msg.id !== 'typing-indicator'),
+      {
         id: nanoid(),
         role: 'assistant',
         content: 'Sorry, there was an error processing your request. Please try again.',
         timestamp: new Date().toISOString(),
-      }]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+      }
+    ]);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
+// Then in your render function, update the messages mapping:
+{messages.map((message) => {
+  if (message.role === 'assistant' && message.isStreaming) {
+    return <TypingIndicator key={message.id} />;
+  }
+  return message.role === 'assistant' ? (
+    <AIResponse
+      key={message.id}
+      content={message.content}
+      isStreaming={message.isStreaming || false}
+    />
+  ) : (
+    <UserMessage
+      key={message.id}
+      content={message.content}
+    />
+  );
+})}
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -307,25 +362,28 @@ const AIChat: React.FC<AIChatProps> = ({
               Tell Us About Your Project
             </DialogTitle>
           </DialogHeader>
-          <ScrollArea className="flex-1 p-6">
-            <div className="space-y-2">
-              {messages.map((message) => (
-                message.role === 'assistant' ? (
-                  <AIResponse
-                    key={message.id}
-                    content={message.content}
-                    isStreaming={message.isStreaming || false}
-                  />
-                ) : (
-                  <UserMessage
-                    key={message.id}
-                    content={message.content}
-                  />
-                )
-              ))}
-            </div>
-            <div ref={messagesEndRef} />
-          </ScrollArea>
+        <ScrollArea className="flex-1 p-6">
+        <div className="space-y-2">
+          {messages.map((message) => {
+            if (message.role === 'system') {
+              return <TypingIndicator key={message.id} />;
+            }
+            return message.role === 'assistant' ? (
+              <AIResponse
+                key={message.id}
+                content={message.content}
+                isStreaming={message.isStreaming || false}
+              />
+            ) : (
+              <UserMessage
+                key={message.id}
+                content={message.content}
+              />
+            );
+          })}
+        </div>
+        <div ref={messagesEndRef} />
+      </ScrollArea>
 
           <ChatInput
             input={input}
@@ -333,7 +391,7 @@ const AIChat: React.FC<AIChatProps> = ({
             onInputChange={setInput}
             onSubmit={handleSubmit}
             onSubmitChat={handleSubmitChat}
-            onKeyDown={handleInputKeyDown}
+            onKeyDown={(e) => handleInputKeyDown(e as React.KeyboardEvent<HTMLTextAreaElement>)}
           />
         </DialogContent>
       </Dialog>
