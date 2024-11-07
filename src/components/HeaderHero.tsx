@@ -89,8 +89,6 @@ const Hero = () => {
           <p className="text-l text-gray-400 mb-10 leading-relaxed max-w-3xl mx-auto">
             Every great innovation starts with a conversation. We're a team of tech enthusiasts who love turning ambitious ideas into reality – whether that's through AI that thinks ahead, blockchain that builds trust, or web platforms that wow your users.
           </p>
-          
-          {/* Centered Connect with us button */}
           <div className="flex justify-center mb-12">
             <AIChat 
               className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-full px-8 py-6 text-lg hover:opacity-90 transition-opacity"
@@ -115,8 +113,6 @@ const Hero = () => {
           </div>
         </div>
       </div>
-
-      {/* Add a subtle animation to the background */}
       <style jsx>{`
         @keyframes gradientFlow {
           0% { background-position: 0% 50%; }

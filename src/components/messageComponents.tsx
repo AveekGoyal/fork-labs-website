@@ -96,7 +96,6 @@ export const UserMessage = memo(({ content }: { content: string }) => {
 
 UserMessage.displayName = 'UserMessage';
 
-// Updated markdown content styles with better contrast
 const styles = `
   .markdown-content h1 {
     font-size: 1.5rem;

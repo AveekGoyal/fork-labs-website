@@ -89,7 +89,6 @@ const Services = () => {
                 transitionDelay: `${index * 200}ms`
               }}
             >
-              {/* Icon Container with Hover Animation */}
               <div className="mb-8 p-5 bg-gray-900/50 rounded-2xl backdrop-blur-sm 
                             ring-1 ring-violet-500/10 shadow-lg shadow-violet-500/5
                             transform transition-all duration-500 hover:scale-110
@@ -99,8 +98,6 @@ const Services = () => {
                   {service.icon}
                 </div>
               </div>
-
-              {/* Content remains the same */}
               <div className="text-center space-y-4">
                 <h3 className="text-2xl font-bold text-white
                              transition-all duration-300 hover:text-violet-400">
