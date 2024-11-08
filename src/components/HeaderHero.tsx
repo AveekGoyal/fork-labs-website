@@ -17,24 +17,39 @@ const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Handle menu item click
+  const handleMenuItemClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const href = e.currentTarget.getAttribute('href');
+    setIsMenuOpen(false); // Close the menu
+    
+    // Smooth scroll to the section
+    if (href) {
+      const element = document.querySelector(href);
+      if (element) {
+        element.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        });
+      }
+    }
+  };
+
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
       scrolled ? 'bg-black/90 backdrop-blur-lg py-4' : 'bg-transparent py-6'
     }`}>
       <nav className="container mx-auto px-6">
         <div className="flex items-center justify-between">
-          {/* Logo - mobile optimization only */}
-          <div className="text-2xl font-bold bg-gradient-to-r from-violet-500 to-indigo-600 bg-clip-text text-transparent 
-                        max-w-[150px] sm:max-w-none overflow-hidden text-ellipsis whitespace-nowrap">
+          <div className="text-2xl font-bold bg-gradient-to-r from-violet-500 to-indigo-600 bg-clip-text text-transparent max-w-[150px] sm:max-w-none overflow-hidden text-ellipsis whitespace-nowrap">
             ForkLabs
           </div>
           
-          {/* Desktop navigation remains unchanged */}
           <div className="hidden md:flex items-center space-x-12">
-            <a href="#services" className="text-sm text-gray-300 hover:text-white transition-colors">Services</a>
-            <a href="#process" className="text-sm text-gray-300 hover:text-white transition-colors">Process</a>
-            <a href="#upcoming" className="text-sm text-gray-300 hover:text-white transition-colors">Upcoming Projects</a>
-            <a href="#pricing" className="text-sm text-gray-300 hover:text-white transition-colors">Pricing</a>
+            <a href="#services" onClick={handleMenuItemClick} className="text-sm text-gray-300 hover:text-white transition-colors">Services</a>
+            <a href="#process" onClick={handleMenuItemClick} className="text-sm text-gray-300 hover:text-white transition-colors">Process</a>
+            <a href="#upcoming" onClick={handleMenuItemClick} className="text-sm text-gray-300 hover:text-white transition-colors">Upcoming Projects</a>
+            <a href="#pricing" onClick={handleMenuItemClick} className="text-sm text-gray-300 hover:text-white transition-colors">Pricing</a>
           </div>
 
           <div className="hidden md:flex items-center space-x-4">
@@ -43,9 +58,8 @@ const Header = () => {
             />
           </div>
 
-          {/* Mobile menu button with improved touch target */}
           <button 
-            className="md:hidden w-12 h-12 flex items-center justify-center text-white"
+            className="md:hidden w-12 h-12 flex items-center justify-center text-white hover:text-violet-400 transition-colors"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label="Toggle menu"
           >
@@ -53,19 +67,63 @@ const Header = () => {
           </button>
         </div>
 
-        {/* Mobile-only menu with improved spacing */}
         {isMenuOpen && (
-          <div className="md:hidden absolute top-full left-0 right-0 bg-black/95 backdrop-blur-lg mt-2">
-            <div className="flex flex-col space-y-4 p-6">
-              <a href="#services" className="text-gray-300 hover:text-white transition-colors py-2">Services</a>
-              <a href="#process" className="text-gray-300 hover:text-white transition-colors py-2">Process</a>
-              <a href="#upcoming" className="text-gray-300 hover:text-white transition-colors py-2">Upcoming Projects</a>
-              <a href="#pricing" className="text-gray-300 hover:text-white transition-colors py-2">Pricing</a>
-              
+          <div className="md:hidden absolute left-0 right-0 top-full bg-slate-950/90 backdrop-blur-md border-t border-slate-800/50">
+            <div className="absolute inset-0 overflow-hidden">
+              <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-violet-500/10 rounded-full blur-3xl animate-blob1 mix-blend-soft-light" />
+              <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-3xl animate-blob2 mix-blend-soft-light" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(99,102,241,0.05),transparent_50%)]" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(139,92,246,0.05),transparent_50%)]" />
             </div>
+
+            <div className="relative flex flex-col space-y-0 p-1">
+              <a 
+                href="#services" 
+                onClick={handleMenuItemClick}
+                className="px-6 py-4 text-base text-gray-300 hover:text-white transition-colors hover:bg-white/5 rounded-lg backdrop-blur-sm"
+              >
+                Services
+              </a>
+              <a 
+                href="#process" 
+                onClick={handleMenuItemClick}
+                className="px-6 py-4 text-base text-gray-300 hover:text-white transition-colors hover:bg-white/5 rounded-lg backdrop-blur-sm"
+              >
+                Process
+              </a>
+              <a 
+                href="#upcoming" 
+                onClick={handleMenuItemClick}
+                className="px-6 py-4 text-base text-gray-300 hover:text-white transition-colors hover:bg-white/5 rounded-lg backdrop-blur-sm"
+              >
+                Upcoming Projects
+              </a>
+              <a 
+                href="#pricing" 
+                onClick={handleMenuItemClick}
+                className="px-6 py-4 text-base text-gray-300 hover:text-white transition-colors hover:bg-white/5 rounded-lg backdrop-blur-sm"
+              >
+                Pricing
+              </a>
+            </div>
+
+            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-violet-500/20 to-transparent" />
           </div>
         )}
       </nav>
+
+      <style jsx>{`
+        @keyframes blob1 {
+          0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.7; }
+          33% { transform: translate(30px, 30px) scale(1.1); opacity: 0.5; }
+          66% { transform: translate(-20px, 20px) scale(0.9); opacity: 0.3; }
+        }
+        @keyframes blob2 {
+          0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.7; }
+          33% { transform: translate(-30px, -30px) scale(1.1); opacity: 0.5; }
+          66% { transform: translate(20px, -20px) scale(0.9); opacity: 0.3; }
+        }
+      `}</style>
     </header>
   );
 };
