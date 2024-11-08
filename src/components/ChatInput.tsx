@@ -24,7 +24,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
     <div className="relative">
       <Button
         onClick={onSubmitChat}
-        className="w-auto mb-4 relative group px-4 py-2 bg-violet-600 hover:bg-violet-700 
+        className="w-full sm:w-auto mb-4 relative group px-4 py-2 bg-violet-600 hover:bg-violet-700 
                    rounded-lg text-sm font-medium text-white flex items-center justify-center 
                    space-x-2 transition-all duration-200"
       >
@@ -32,17 +32,17 @@ const ChatInput: React.FC<ChatInputProps> = ({
         <span>Submit & Book Call</span>
       </Button>
       
-      <form onSubmit={onSubmit} className="flex space-x-3">
+      <form onSubmit={onSubmit} className="flex space-x-2 sm:space-x-3">
         <div className="flex-1 relative group">
           <TextareaAutosize
             value={input}
             onChange={(e) => onInputChange(e.target.value)}
             onKeyDown={onKeyDown}
             placeholder="Type your message..."
-            className="w-full bg-white/10 backdrop-blur-sm px-4 py-3 rounded-xl
+            className="w-full bg-white/10 backdrop-blur-sm px-3 sm:px-4 py-3 rounded-xl
                      text-white placeholder:text-white/50
                      focus:outline-none focus:ring-2 focus:ring-violet-500/50
-                     min-h-[44px] max-h-[120px] resize-none"
+                     min-h-[44px] max-h-[120px] resize-none text-sm sm:text-base"
             disabled={isLoading}
             maxRows={4}
           />
@@ -55,15 +55,16 @@ const ChatInput: React.FC<ChatInputProps> = ({
         <Button
           type="submit"
           disabled={isLoading || !input.trim()}
-          className="bg-violet-600 hover:bg-violet-700 rounded-xl px-3
+          className="bg-violet-600 hover:bg-violet-700 rounded-xl p-2 sm:px-3
                    disabled:opacity-50 disabled:cursor-not-allowed
                    transition-all duration-200"
         >
-          <Send className="w-5 h-5 text-white" />
+          <Send className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
         </Button>
       </form>
     </div>
   );
 };
+
 
 export default ChatInput;
