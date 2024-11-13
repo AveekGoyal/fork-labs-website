@@ -338,9 +338,10 @@ const AIChat: React.FC<AIChatProps> = ({
         <DialogTrigger asChild>
           <Button className={className}>{triggerText}</Button>
         </DialogTrigger>
-  
+
         <DialogContent 
-          className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[95vw] sm:w-[90vw] max-w-3xl h-[90vh] p-0 border-none bg-transparent"
+          className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[98vw] sm:w-[90vw] max-w-3xl h-[95vh] sm:h-[90vh] p-0 border-none bg-transparent"
+          data-shadcn-dialog="content"
           onPointerDownOutside={(e) => {
             if (messages.length >= 1) {
               e.preventDefault();
@@ -352,32 +353,27 @@ const AIChat: React.FC<AIChatProps> = ({
             }
           }}
         >
-          {/* Main container with glass effect */}
           <div className="relative w-full h-full rounded-3xl flex flex-col overflow-hidden">
-            {/* Background */}
+            {/* Background elements remain the same */}
             <div className="absolute inset-0 bg-slate-950/90 backdrop-blur-md border border-slate-800/50" />
-            
-            {/* Animated background elements */}
             <div className="absolute inset-0 overflow-hidden">
               <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-violet-500/10 rounded-full blur-3xl animate-blob1 mix-blend-soft-light" />
               <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-3xl animate-blob2 mix-blend-soft-light" />
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(99,102,241,0.05),transparent_50%)]" />
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(139,92,246,0.05),transparent_50%)]" />
             </div>
-  
-            {/* Top highlight */}
+
             <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-violet-500/20 to-transparent" />
-  
-            {/* Content */}
+
             <div className="relative flex flex-col h-full">
-              <DialogHeader className="flex-shrink-0 px-4 sm:px-8 pt-6 sm:pt-8 pb-4">
-                <DialogTitle className="text-xl font-semibold bg-gradient-to-br from-white to-white/70 bg-clip-text text-transparent">
+              <DialogHeader className="flex-shrink-0 px-3 sm:px-8 pt-4 sm:pt-8 pb-2 sm:pb-4">
+                <DialogTitle className="text-lg sm:text-xl font-semibold bg-gradient-to-br from-white to-white/70 bg-clip-text text-transparent">
                   Tell Us About Your Project
                 </DialogTitle>
               </DialogHeader>
-  
-              <ScrollArea className="flex-1 px-4 sm:px-8 pb-4 pt-2">
-                <div className="space-y-4 sm:space-y-6 pr-2">
+
+              <ScrollArea className="flex-1 px-3 sm:px-8 pb-2 sm:pb-4 pt-2">
+                <div className="space-y-3 sm:space-y-6 pr-2">
                   {messages.map((message) => {
                     if (message.role === 'system') {
                       return <TypingIndicator key={message.id} />;
@@ -398,8 +394,8 @@ const AIChat: React.FC<AIChatProps> = ({
                 </div>
                 <div ref={messagesEndRef} />
               </ScrollArea>
-  
-              <div className="flex-shrink-0 p-4 sm:p-8 pt-4">
+
+              <div className="flex-shrink-0 p-3 sm:p-8 pt-2 sm:pt-4">
                 <ChatInput
                   input={input}
                   isLoading={isLoading}
@@ -419,7 +415,7 @@ const AIChat: React.FC<AIChatProps> = ({
         onClose={() => setShowCalendly(false)}
         onScheduled={handleCalendlyScheduled}
       />
-  
+
       <style jsx global>{`
         @keyframes blob1 {
           0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.7; }
@@ -431,42 +427,100 @@ const AIChat: React.FC<AIChatProps> = ({
           33% { transform: translate(-30px, -30px) scale(1.1); opacity: 0.5; }
           66% { transform: translate(20px, -20px) scale(0.9); opacity: 0.3; }
         }
-        button[type="button"].absolute.right-4.top-4 {
-          color: white;
-        }
+            button[type="button"].absolute.right-4.top-4 {
+    color: white;  // This is the close button styling
+  }
         
-        /* Ensure proper message content wrapping on mobile */
-        .prose-invert {
-          max-width: 100%;
-          overflow-wrap: break-word;
-          word-wrap: break-word;
-          word-break: break-word;
-        }
-        
-        /* Adjust scrollbar for better mobile experience */
-        .scrollbar-thumb-rounded-full::-webkit-scrollbar {
-          width: 4px;
-        }
-        
+        /* Mobile-specific styles */
         @media (max-width: 640px) {
+          .prose-invert {
+            max-width: 100%;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            word-break: break-word;
+          }
+          
           .markdown-content {
-            font-size: 0.9375rem;
-            line-height: 1.5;
+            font-size: 0.875rem;
+            line-height: 1.4;
           }
+          
           .markdown-content h1 {
-            font-size: 1.25rem;
-            margin-bottom: 0.75rem;
-          }
-          .markdown-content h2 {
             font-size: 1.125rem;
             margin-bottom: 0.5rem;
+            line-height: 1.3;
           }
+          
+          .markdown-content h2 {
+            font-size: 1rem;
+            margin-bottom: 0.4rem;
+            line-height: 1.3;
+          }
+          
           .markdown-content p {
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.4rem;
+            line-height: 1.4;
+          }
+          
+          .markdown-content ul {
+            padding-left: 1rem;
+            margin-bottom: 0.4rem;
+          }
+          
+          .markdown-content li {
+            margin-bottom: 0.2rem;
+          }
+          
+          /* Message bubbles optimization for mobile */
+          [class*='flex items-start space-x-3'] {
+            margin-bottom: 0.75rem;
+          }
+
+          /* Increase max-width for message boxes on mobile */
+          .inline-block.max-w-\[85\%\] {
+            max-width: 92% !important;
+          }
+          
+          /* User and AI icons size adjustment for mobile */
+          [class*='relative w-8 h-8'] {
+            width: 1.75rem;
+            height: 1.75rem;
+          }
+          
+          /* Reduce space between icon and message */
+          .space-x-3 {
+            gap: 0.5rem !important;
+          }
+          
+          /* Message content padding adjustment for mobile */
+          [class*='px-6 py-4'] {
+            padding: 0.75rem 1rem;
+          }
+          
+          /* Optimize chat input area for mobile */
+          textarea {
+            font-size: 0.9375rem;
+            padding: 0.5rem 0.75rem;
+            min-height: 40px;
+          }
+          
+          /* Adjust submit button for mobile */
+          button[type="submit"] {
+            padding: 0.5rem;
+          }
+          
+          /* Optimize scrollbar for mobile */
+          ::-webkit-scrollbar {
+            width: 3px;
+          }
+          
+          ::-webkit-scrollbar-thumb {
+            background-color: rgba(139, 92, 246, 0.3);
           }
         }
       `}</style>
     </>
   );
-}
-  export default AIChat;
+};
+
+export default AIChat;
