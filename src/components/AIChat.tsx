@@ -340,7 +340,7 @@ const AIChat: React.FC<AIChatProps> = ({
         </DialogTrigger>
 
         <DialogContent 
-          className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[98vw] sm:w-[90vw] max-w-3xl h-[95vh] sm:h-[90vh] p-0 border-none bg-transparent"
+          className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[95vw] sm:w-[90vw] max-w-3xl h-[85vh] sm:h-[80vh] p-0 border-none bg-transparent"
           data-shadcn-dialog="content"
           onPointerDownOutside={(e) => {
             if (messages.length >= 1) {
@@ -373,7 +373,7 @@ const AIChat: React.FC<AIChatProps> = ({
               </DialogHeader>
 
               <ScrollArea className="flex-1 px-3 sm:px-8 pb-2 sm:pb-4 pt-2">
-                <div className="space-y-3 sm:space-y-6 pr-2">
+                <div className="space-y-3 sm:space-y-6 pr-2 pt-4 sm:pt-2">
                   {messages.map((message) => {
                     if (message.role === 'system') {
                       return <TypingIndicator key={message.id} />;
