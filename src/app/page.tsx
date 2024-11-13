@@ -8,7 +8,12 @@ import AIChat from '../components/AIChat';
 
 const App = () => {
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-black text-white" style={{ 
+      minWidth: '320px',
+      contain: 'paint layout size',
+      position: 'relative',
+      overflowX: 'hidden'
+    }}>
       <Header />
       <main>
         <Hero />

@@ -338,9 +338,9 @@ const AIChat: React.FC<AIChatProps> = ({
         <DialogTrigger asChild>
           <Button className={className}>{triggerText}</Button>
         </DialogTrigger>
-
-        <DialogContent
-          className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 max-w-3xl w-[90vw] h-auto max-h-[90vh] p-0 border-none bg-transparent flex flex-col overflow-hidden"
+  
+        <DialogContent 
+          className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[95vw] sm:w-[90vw] max-w-3xl h-[90vh] p-0 border-none bg-transparent"
           onPointerDownOutside={(e) => {
             if (messages.length >= 1) {
               e.preventDefault();
@@ -353,7 +353,7 @@ const AIChat: React.FC<AIChatProps> = ({
           }}
         >
           {/* Main container with glass effect */}
-          <div className="relative w-full h-[700px] max-h-[90vh] rounded-3xl flex flex-col overflow-hidden">
+          <div className="relative w-full h-full rounded-3xl flex flex-col overflow-hidden">
             {/* Background */}
             <div className="absolute inset-0 bg-slate-950/90 backdrop-blur-md border border-slate-800/50" />
             
@@ -364,20 +364,20 @@ const AIChat: React.FC<AIChatProps> = ({
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(99,102,241,0.05),transparent_50%)]" />
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(139,92,246,0.05),transparent_50%)]" />
             </div>
-
+  
             {/* Top highlight */}
             <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-violet-500/20 to-transparent" />
-
+  
             {/* Content */}
             <div className="relative flex flex-col h-full">
-              <DialogHeader className="flex-shrink-0 px-8 pt-8 pb-4">
+              <DialogHeader className="flex-shrink-0 px-4 sm:px-8 pt-6 sm:pt-8 pb-4">
                 <DialogTitle className="text-xl font-semibold bg-gradient-to-br from-white to-white/70 bg-clip-text text-transparent">
                   Tell Us About Your Project
                 </DialogTitle>
               </DialogHeader>
-
-              <ScrollArea className="flex-1 px-8 pb-4 pt-2 [&_*::-webkit-scrollbar-thumb]:!bg-violet-500/50 [&_*::-webkit-scrollbar-thumb:hover]:!bg-violet-500/70">
-                <div className="space-y-6">
+  
+              <ScrollArea className="flex-1 px-4 sm:px-8 pb-4 pt-2">
+                <div className="space-y-4 sm:space-y-6 pr-2">
                   {messages.map((message) => {
                     if (message.role === 'system') {
                       return <TypingIndicator key={message.id} />;
@@ -398,8 +398,8 @@ const AIChat: React.FC<AIChatProps> = ({
                 </div>
                 <div ref={messagesEndRef} />
               </ScrollArea>
-
-              <div className="flex-shrink-0 p-8 pt-4">
+  
+              <div className="flex-shrink-0 p-4 sm:p-8 pt-4">
                 <ChatInput
                   input={input}
                   isLoading={isLoading}
@@ -419,7 +419,7 @@ const AIChat: React.FC<AIChatProps> = ({
         onClose={() => setShowCalendly(false)}
         onScheduled={handleCalendlyScheduled}
       />
-
+  
       <style jsx global>{`
         @keyframes blob1 {
           0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.7; }
@@ -434,9 +434,39 @@ const AIChat: React.FC<AIChatProps> = ({
         button[type="button"].absolute.right-4.top-4 {
           color: white;
         }
+        
+        /* Ensure proper message content wrapping on mobile */
+        .prose-invert {
+          max-width: 100%;
+          overflow-wrap: break-word;
+          word-wrap: break-word;
+          word-break: break-word;
+        }
+        
+        /* Adjust scrollbar for better mobile experience */
+        .scrollbar-thumb-rounded-full::-webkit-scrollbar {
+          width: 4px;
+        }
+        
+        @media (max-width: 640px) {
+          .markdown-content {
+            font-size: 0.9375rem;
+            line-height: 1.5;
+          }
+          .markdown-content h1 {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+          }
+          .markdown-content h2 {
+            font-size: 1.125rem;
+            margin-bottom: 0.5rem;
+          }
+          .markdown-content p {
+            margin-bottom: 0.5rem;
+          }
+        }
       `}</style>
     </>
   );
-};
-
-export default AIChat;
+}
+  export default AIChat;

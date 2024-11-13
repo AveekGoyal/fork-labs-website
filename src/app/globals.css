@@ -212,3 +212,18 @@ body {
   transform: translateY(-5px);
 }
 
+
+.dialog-container {
+  @apply fixed inset-0 z-50 flex items-center justify-center;
+  /* Prevent horizontal scrolling */
+  overflow-x: hidden;
+}
+
+.dialog-content {
+  @apply w-[90vw] max-w-3xl mx-auto;
+  /* Fixed positioning to prevent movement */
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
