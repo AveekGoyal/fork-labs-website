@@ -471,30 +471,41 @@ const AIChat: React.FC<AIChatProps> = ({
             margin-bottom: 0.2rem;
           }
           
+          /* Hide robot icons on mobile */
+          [class*='relative w-8 h-8'] {
+            display: none !important;
+          }
+          
+          /* Remove space taken by icons */
+          .space-x-3 {
+            gap: 0 !important;
+          }
+          
           /* Message bubbles optimization for mobile */
           [class*='flex items-start space-x-3'] {
             margin-bottom: 0.75rem;
           }
 
-          /* Increase max-width for message boxes on mobile */
+          /* Maximize message width on mobile */
           .inline-block.max-w-\[85\%\] {
-            max-width: 92% !important;
+            max-width: 100% !important;
           }
           
-          /* User and AI icons size adjustment for mobile */
-          [class*='relative w-8 h-8'] {
-            width: 1.75rem;
-            height: 1.75rem;
-          }
-          
-          /* Reduce space between icon and message */
-          .space-x-3 {
-            gap: 0.5rem !important;
-          }
-          
-          /* Message content padding adjustment for mobile */
+          /* Adjust message content padding */
           [class*='px-6 py-4'] {
-            padding: 0.75rem 1rem;
+            padding: 0.625rem 0.875rem;
+          }
+
+          /* Adjust message container padding */
+          .flex-1.px-3 {
+            padding-left: 0.5rem !important;
+            padding-right: 0.5rem !important;
+          }
+
+          /* Remove rounded corner adjustments since no icons */
+          [class*='rounded-tl-none'],
+          [class*='rounded-tr-none'] {
+            border-radius: 0.75rem !important;
           }
           
           /* Optimize chat input area for mobile */
