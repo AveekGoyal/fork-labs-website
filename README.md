@@ -2,6 +2,8 @@
 
 This is the official website for Fork Labs, built with [Next.js](https://nextjs.org) and modern web technologies.
 
+[Live Link](https://fork-labs-website.vercel.app/)
+
 ## Project Overview
 
 Fork Labs website is a modern, responsive web application that showcases the company's products, services, and vision. The site is built with performance, accessibility, and user experience as top priorities.
